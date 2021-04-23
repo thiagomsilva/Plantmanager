@@ -1,6 +1,6 @@
 import React from 'react';
 import AppLoading from 'expo-app-loading'
-import { Welcome } from './src/pages/Welcome';
+import Routes from './src/routes';
 import { useFonts, Jost_400Regular, Jost_600SemiBold } from '@expo-google-fonts/jost'
 
 export default function App() {
@@ -13,6 +13,6 @@ export default function App() {
     return <AppLoading />
 
   return (
-    <Welcome />
+    <Routes />
   );
 }
