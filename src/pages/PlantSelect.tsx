@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/core';
 import { Header } from '../components/Header';
 import { PlantCardPrimary } from '../components/PlantCardPrimary';
 import { Load } from '../components/Load';
+import { PlantProps } from '../libs/storage';
 
 import api from '../services/api';
 
@@ -21,19 +22,6 @@ import fonts from '../styles/fonts';
 interface EnviormentsProps {
     key: string;
     title: string;
-}
-
-interface PlantProps {
-    id: string;
-    name: string;
-    about: string;
-    water_tips: string;
-    photo: string;
-    environments: [string];
-    frequency: {
-      times: number;
-      repeat_every: string;
-    }
 }
 
 export function PlantSelect() {
@@ -89,7 +77,7 @@ export function PlantSelect() {
     }
 
     function handlePlantSelect(plant: PlantProps) {
-        navigation.navigate('PlantSave')
+        navigation.navigate('PlantSave', { plant });
     }
 
     useEffect(() => {
