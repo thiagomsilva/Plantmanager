@@ -1,13 +1,10 @@
-import React from 'react';
-import { 
-    Text, 
-    StyleSheet
-} from 'react-native';
-import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
-import { SvgFromUri } from 'react-native-svg'
+import React from "react";
+import { StyleSheet, Text } from "react-native";
+import { RectButton, RectButtonProps } from "react-native-gesture-handler";
+import Svg, { SvgFromUri } from "react-native-svg";
 
-import colors from '../styles/colors';
-import fonts from '../styles/fonts';
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
 
 interface PlantProps extends RectButtonProps {
     data: {
@@ -16,33 +13,16 @@ interface PlantProps extends RectButtonProps {
     }
 }
 
-export function PlantCardPrimary({
-    data,
-    ...rest 
-} : PlantProps) {
+export function PlantCardPrimary ({ data, ...rest }: PlantProps) {
     return (
-        <RectButton
-            style={[
-                styles.container,
-                // active && styles.containerActive // Se o active for verdadeiro adiciona style containerActive
-            ]}
-            {...rest}
-        >
-            <SvgFromUri 
-                uri={data.photo}
-                width={70}
-                height={70}
-            />
-            <Text 
-                style={[
-                    styles.text,
-                    // active && styles.textActive // Se o active for verdadeiro adiciona style textActive
-                ]}
-            >
+        <RectButton style={styles.container} {...rest}>
+            <SvgFromUri uri={data.photo} width={70} height={70} />
+
+            <Text style={styles.text}>
                 { data.name }
             </Text>
         </RectButton>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -56,18 +36,9 @@ const styles = StyleSheet.create({
         margin: 10
     },
 
-    // containerActive: {
-    //     backgroundColor: colors.green_light
-    // },
-
     text: {
         color: colors.green_dark,
         fontFamily: fonts.heading,
         marginVertical: 16
-    },
-
-    // textActive: {
-    //     fontFamily: fonts.heading,
-    //     color: colors.green_dark,
-    // }
+    }
 })

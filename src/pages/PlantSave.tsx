@@ -1,32 +1,26 @@
-import React, { useState } from 'react';
-import {
-    Alert,
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    ScrollView,
-    Platform,
-    TouchableOpacity
-} from 'react-native';
-import { SvgFromUri } from 'react-native-svg';
-import { getBottomSpace } from 'react-native-iphone-x-helper';
-import { useNavigation, useRoute } from '@react-navigation/core';
-import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
-import { format, isBefore } from 'date-fns';
-import { PlantProps, savePlant } from '../libs/storage';
+import React from "react";
+import { Alert, StyleSheet, Text, View, Image, ScrollView, Platform, TouchableOpacity } from "react-native";
 
-import { Button } from '../components/Button';
+import { getBottomSpace } from "react-native-iphone-x-helper";
+import { useRoute } from "@react-navigation/core";
+import { SvgFromUri } from "react-native-svg";
+import waterdrop from "../assets/waterdrop.png";
+import { Button } from "../components/Button";
+import DateTimePicker, { Event } from "@react-native-community/datetimepicker";
+import { loadPlant, PlantProps, savePlant } from "../libs/storage";
 
-import waterdrop from '../assets/waterdrop.png';
-import colors from '../styles/colors';
-import fonts from '../styles/fonts';
+import colors from "../styles/colors";
+import fonts from "../styles/fonts";
+import { useState } from "react";
+import { format, isBefore } from "date-fns";
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 interface Params {
-    plant: PlantProps
+    plant: PlantProps;
 }
 
-export function PlantSave(){
+export function PlantSave() {
     const [selectedDateTime, setSelectedDateTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(Platform.OS == 'ios');
 
@@ -35,21 +29,22 @@ export function PlantSave(){
 
     const navigation = useNavigation();
 
-    function handleChangeTime(event: Event, dateTime: Date | undefined){
-        if(Platform.OS === 'android'){
-            setShowDatePicker(oldState => !oldState);
+    function handleChangeTime(event: Event, dateTime: Date | undefined) {
+        if (Platform.OS == 'android') {
+            setShowDatePicker(oldState => !oldState)
         }
 
-        if(dateTime && isBefore(dateTime, new Date())){
+        if (dateTime && isBefore(dateTime, new Date())) {
             setSelectedDateTime(new Date());
-            return Alert.alert('Escolha uma hora no futuro! ⏰');
+
+            return Alert.alert('Escolha uma hora no futuro!');
         }
 
-        if(dateTime)
+        if (dateTime)
             setSelectedDateTime(dateTime);
     }
 
-    function handleOpenDatetimePickerForAndroid(){
+    function handleOpenDateTimePickerForAndroid() {
         setShowDatePicker(oldState => !oldState);
     }
 
@@ -62,80 +57,59 @@ export function PlantSave(){
 
             navigation.navigate('Confirmation', {
                 title: 'Tudo certo',
-                subtitle: 'Fique tranquilo que sempre vamos lembrar você de cuidar da sua plantinha com muito cuidado.',
-                buttonTitle: 'Muito Obrigado :D',
+                subtitle: 'Fique tranquilo que vamos lembrar você de cuidar de suas plantas com cuidado',
+                buttonTitle: 'Muito obrigado',
                 icon: 'hug',
-                nextScreen: 'MyPlants',
-            }); 
-
+                nextScreen: 'MyPlants'
+            });
         } catch {
-            Alert.alert('Não foi possível salvar. 😢');
+            return Alert.alert('Erro ao salvar!');
         }
     }
 
-    return ( 
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollListContainer}
-        >
+    return (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
             <View style={styles.container}>
                 <View style={styles.plantInfo}>
-                    <SvgFromUri
-                        uri={plant.photo}
-                        height={150}
-                        width={150}
-                    />
+                    <SvgFromUri uri={plant.photo} height={150} width={150} />
 
                     <Text style={styles.plantName}>
-                    {plant.name}
+                        {plant.name}
                     </Text>
+
                     <Text style={styles.plantAbout}>
-                        {plant.about} 
+                        {plant.about}
                     </Text>
                 </View>
 
                 <View style={styles.controller}>
                     <View style={styles.tipContainer}>
-                        <Image
-                            source={waterdrop}
-                            style={styles.tipImage}
-                        />
+                        <Image source={waterdrop} style={styles.tipImage} />
+
                         <Text style={styles.tipText}>
                             {plant.water_tips}
                         </Text>
                     </View>
 
                     <Text style={styles.alertLabel}>
-                        Escolha o melhor horário para ser lembrado:
+                        Escolha o melhor horário para ser lembrado
                     </Text>
 
                     {showDatePicker && (
-                        <DateTimePicker
-                        value={selectedDateTime}
-                        mode="time"
-                        display="spinner"
-                        onChange={handleChangeTime}
-                        />
+                        <DateTimePicker value={selectedDateTime} mode="time"
+                            display="spinner" onChange={handleChangeTime} />
                     )}
 
-                    {
-                        Platform.OS === 'android' && (
-                            <TouchableOpacity 
-                                style={styles.dateTimePickerButton}
-                                onPress={handleOpenDatetimePickerForAndroid}
-                            >
-                                <Text style={styles.dateTimePickerText}>
+                    {Platform.OS == 'android' && (
+                        <TouchableOpacity style={styles.dateTimePickerButton}
+                            onPress={handleOpenDateTimePickerForAndroid}>
+                            <Text style={styles.dateTimePickerText}>
                                 {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
-                                </Text>
-                            </TouchableOpacity>
-                        )
-                    }
+                            </Text>
+                        </TouchableOpacity>
+                    )}
 
-
-                    <Button 
-                        title="Cadastrar planta"
-                        onPress={handleSave}
-                    />
+                    <Button title="Cadastrar Planta" onPress={handleSave} />
                 </View>
             </View>
         </ScrollView>
@@ -146,13 +120,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
-        backgroundColor: colors.shape,
-    },
-    scrollListContainer: {
-        flexGrow: 1,
-        justifyContent: 'space-between',
         backgroundColor: colors.shape
-      },
+    },
+
     plantInfo: {
         flex: 1,
         paddingHorizontal: 30,
@@ -161,18 +131,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: colors.shape
     },
+
     controller: {
         backgroundColor: colors.white,
         paddingHorizontal: 20,
         paddingTop: 20,
         paddingBottom: getBottomSpace() || 20
     },
+
     plantName: {
+        textAlign: 'center',
         fontFamily: fonts.heading,
-        fontSize: 24,
+        fontSize: 14,
         color: colors.heading,
-        marginTop: 15,
+        marginTop: 15
     },
+
     plantAbout: {
         textAlign: 'center',
         fontFamily: fonts.text,
@@ -180,6 +154,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         marginTop: 10
     },
+
     tipContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -190,10 +165,12 @@ const styles = StyleSheet.create({
         position: 'relative',
         bottom: 60
     },
+
     tipImage: {
         width: 56,
-        height: 56,
+        height: 56
     },
+
     tipText: {
         flex: 1,
         marginLeft: 20,
@@ -202,6 +179,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         textAlign: 'justify'
     },
+
     alertLabel: {
         textAlign: 'center',
         fontFamily: fonts.complement,
@@ -209,11 +187,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginBottom: 5
     },
+
     dateTimePickerButton: {
         width: '100%',
         alignItems: 'center',
         paddingVertical: 40,
     },
+
     dateTimePickerText: {
         color: colors.heading,
         fontSize: 24,
