@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, Image, View } from "react-native";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 
-import userImg from "../assets/thiago.jpg";
+import userImg from "../assets/beta.jpg";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
 
